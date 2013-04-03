@@ -33,16 +33,25 @@ public class UDPClient implements Serializable{
         
         //Y se enviamos ese arreglo en el datagrama
         try{
-            DatagramSocket aSocket = new DatagramSocket();    
+            DatagramSocket aSocket = new DatagramSocket();   
+            aSocket.setSoTimeout( 500 );
             DatagramPacket messageOut = new DatagramPacket(messageBytes, messageBytes.length, 
                InetAddress.getByName(ip), port);
             aSocket.send( messageOut );
+            
+            //Esperamos la réplica
+            byte[] buffer = new byte[1000];
+            DatagramPacket reply = new DatagramPacket(buffer, buffer.length);	
+            aSocket.receive(reply);
+            System.out.println("Reply: " + new String(reply.getData()));
+            
             aSocket.close();
             System.out.print("Enviando mensaje con UDP: ");
             System.out.println( m );
         }catch (SocketException e){
             System.out.println("Socket: " + e.getMessage());
         }catch (IOException e){
+            System.out.println( );
             System.out.println("IO: " + e.getMessage());
         }
     }

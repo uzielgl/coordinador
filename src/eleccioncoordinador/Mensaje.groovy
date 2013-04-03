@@ -15,5 +15,9 @@ class Mensaje implements Serializable{
     public static final int TIPO_OK = 2;
     public static final int TIPO_COORDINADOR = 3;
     
+    public int tipo; //El tipo de mensaje que es
+    
+    public int from_id; //El id del mensaje que envia
+    public int to_id; //El id al que envia
 
 }

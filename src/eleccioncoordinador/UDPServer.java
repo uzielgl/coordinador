@@ -48,6 +48,12 @@ public class UDPServer extends Thread implements Serializable{
                 }catch( Exception e){
                     e.printStackTrace();
                 }
+                
+                //Hacemos la replica
+                DatagramPacket reply = new DatagramPacket(request.getData(), 
+                    request.getLength(), request.getAddress(), request.getPort());
+                aSocket.send(reply);
+                
                 //System.out.println( new String( request.getData(), "UTF-8" ).trim() );
             } 
         }catch (SocketException e){System.out.println("Socket: " + e.getMessage());

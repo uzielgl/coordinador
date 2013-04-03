@@ -63,6 +63,7 @@ public class FrameCoordinador extends javax.swing.JFrame {
         Map<String,String> confClient = process.get( Integer.toString( id_process ) );
         
         client = new Proceso(id_process, confClient.get("ip"), Integer.parseInt( confClient.get("port") ) );
+        client.window = this;
         
         ArrayList<Proceso> procesos = new ArrayList<Proceso>();
         for( String key : process.keySet() ){
@@ -201,6 +202,11 @@ public class FrameCoordinador extends javax.swing.JFrame {
         });
 
         btnSelectCoordinator.setText("Elegir Coordinador");
+        btnSelectCoordinator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectCoordinatorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -318,6 +324,11 @@ public class FrameCoordinador extends javax.swing.JFrame {
             btnStopStartProcess.setText( "Iniciar Proceso" );
         }
     }//GEN-LAST:event_btnStopStartProcessActionPerformed
+
+    private void btnSelectCoordinatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectCoordinatorActionPerformed
+        // TODO add your handling code here:
+        client.seleccionarCoordinador();
+    }//GEN-LAST:event_btnSelectCoordinatorActionPerformed
 
     /**
      * @param args the command line arguments
