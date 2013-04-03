@@ -4,17 +4,89 @@
  */
 package eleccioncoordinador;
 
+import com.google.gson.Gson;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.*;
+import java.util.Scanner;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+
 /**
  *
  * @author Dai
  */
 public class FrameCoordinador extends javax.swing.JFrame {
+    //Los botones de los procesos
+    ArrayList<JButton> buttonsProcess = new ArrayList<JButton>();
+    
+    //El id del proceso como el que actua (el que escogio de la lista de procesos)
+    public int idProcess;
+    
+    public Proceso client;
+    
 
     /**
      * Creates new form FrameCoordinador
      */
     public FrameCoordinador() {
         initComponents();
+        
+        loadProcessButtons();
+    }
+    
+    /** Carga los procesos disponibles en procesos.txt para seleccionar alguno y interactue como tal*/
+    public void loadProcessButtons(){
+        
+        Map<String,HashMap> process = new Gson().fromJson( getContentFile( new File("procesos.txt") ), Map.class );
+        for(String key : process.keySet()) {
+            JButton b = new JButton( key );
+            buttonsProcess.add( b );
+            b.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    idProcess = Integer.parseInt( ( ( javax.swing.JButton) e.getSource() ).getText() );
+                    for( JButton btn: buttonsProcess ) btn.setEnabled( false );
+                    lblCurrentProcess.setText( "P" + idProcess);
+                    createProcess( idProcess );
+                }
+            });
+            pnlButtons.add( b );
+        }        
+    }
+    
+    /** Crea el proceso cliente, y le asigna los pers al proceso cliente*/
+    public void createProcess( int id_process){
+        Map<String,HashMap> process = new Gson().fromJson( getContentFile( new File("procesos.txt") ), Map.class );
+        Map<String,String> confClient = process.get( Integer.toString( id_process ) );
+        
+        client = new Proceso(id_process, confClient.get("ip"), Integer.parseInt( confClient.get("port") ) );
+        
+        ArrayList<Proceso> procesos = new ArrayList<Proceso>();
+        for( String key : process.keySet() ){
+            Map<String,String> conf = process.get( key );
+            procesos.add( new Proceso( Integer.parseInt(key), conf.get("ip"), Integer.parseInt( conf.get("port") ) ) );
+        }
+        client.setPeers(procesos);
+        System.out.println(client.peers);
+        
+        client.start();
+        btnStopStartProcess.setText( "Parar Proceso" );
+    }
+    
+     /** Obtiene el contenido de un archivo*/
+    public String getContentFile( File file ){
+        String text = "";
+        try{
+            Scanner config_scanner = new Scanner( file );
+            while( config_scanner.hasNext() ){
+                text += config_scanner.next();
+            }
+        }catch(IOException e){
+        }
+        return text;
     }
 
     /**
@@ -51,7 +123,6 @@ public class FrameCoordinador extends javax.swing.JFrame {
         jLabel1.setText("Soy:");
 
         lblCurrentProcess.setFont(new java.awt.Font("Impact", 0, 14)); // NOI18N
-        lblCurrentProcess.setText("P1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -79,7 +150,6 @@ public class FrameCoordinador extends javax.swing.JFrame {
         jLabel3.setText("Soy coordinador:");
 
         lblStatusCoordinator.setFont(new java.awt.Font("Impact", 0, 14)); // NOI18N
-        lblStatusCoordinator.setText("Si/No");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -171,16 +241,7 @@ public class FrameCoordinador extends javax.swing.JFrame {
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout pnlButtonsLayout = new javax.swing.GroupLayout(pnlButtons);
-        pnlButtons.setLayout(pnlButtonsLayout);
-        pnlButtonsLayout.setHorizontalGroup(
-            pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 273, Short.MAX_VALUE)
-        );
-        pnlButtonsLayout.setVerticalGroup(
-            pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
+        pnlButtons.setLayout(new javax.swing.BoxLayout(pnlButtons, javax.swing.BoxLayout.LINE_AXIS));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -196,15 +257,14 @@ public class FrameCoordinador extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(24, Short.MAX_VALUE))
+                        .addContainerGap(26, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(pnlButtons, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pnlButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(34, 34, 34))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,7 +276,7 @@ public class FrameCoordinador extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -231,18 +291,17 @@ public class FrameCoordinador extends javax.swing.JFrame {
             .addGap(0, 557, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 6, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 6, Short.MAX_VALUE)))
+                    .addGap(0, 10, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 358, Short.MAX_VALUE)
+            .addGap(0, 384, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -250,6 +309,14 @@ public class FrameCoordinador extends javax.swing.JFrame {
 
     private void btnStopStartProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopStartProcessActionPerformed
         // TODO add your handling code here:
+        
+        if( this.btnStopStartProcess.getText().equals( "Iniciar Proceso" ) ){
+            client.start();
+            btnStopStartProcess.setText( "Parar Proceso" );
+        }else{
+            client.stop();
+            btnStopStartProcess.setText( "Iniciar Proceso" );
+        }
     }//GEN-LAST:event_btnStopStartProcessActionPerformed
 
     /**

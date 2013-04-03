@@ -16,6 +16,8 @@ public class UDPServer extends Thread implements Serializable{
     private String port;
     public List<ComunicadorListener> listeners = new ArrayList<ComunicadorListener>();
     
+    DatagramSocket aSocket;
+    
     UDPServer( String ip, String port ){
         this.ip = ip;
         this.port = port;
@@ -26,9 +28,10 @@ public class UDPServer extends Thread implements Serializable{
     }
     
     public void run(){
-        System.out.println("Levantando servidor en " + ip + " " + " puerto " + port);
+        
         try{
-            DatagramSocket aSocket = new DatagramSocket( Integer.parseInt( port ) );
+            aSocket = new DatagramSocket( Integer.parseInt( port ) );
+            System.out.println("Levantando servidor en " + ip + " " + " puerto " + port);
             while(true){
                 byte[] buffer = new byte[1000];
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
@@ -52,6 +55,9 @@ public class UDPServer extends Thread implements Serializable{
     }
     
     public void stopServer(){
+        aSocket.close();
+        aSocket.disconnect();
+        aSocket = null;
         interrupt();
     }
 

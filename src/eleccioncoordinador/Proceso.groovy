@@ -13,17 +13,15 @@ class Proceso {
     public int id;
     
     //Todos los procesos involucrados
-    ArrayList<Proceso> peers;
+    public ArrayList<Proceso> peers;
     
-    UDPClient udpClient = new UDPClient();
-    UDPServer udpServer;
+    public UDPClient udpClient = new UDPClient();
+    public UDPServer udpServer;
     
     public Proceso( int id, String ip, int port ){
         this.ip = ip;
         this.id = id;
         this.port = port;
-        
-        start();
     }
         
     /** Inicia el servidor del proceso*/
@@ -35,6 +33,16 @@ class Proceso {
     /** Detiene el servidor del proceso*/
     public void stop(){
         udpServer.stopServer();
+    }
+    
+    /** Establece todos los procesos involucrados en el SD*/
+    public void setPeers(ArrayList<Proceso> peers){
+        this.peers = peers;
+    }
+    
+    /** Obtiene los Peers mayores (que tienen el id mayor o igual ? ) a el mismo*/
+    public ArrayList<Proceso> getGreaterPeers(){
+        
     }
 }
 
