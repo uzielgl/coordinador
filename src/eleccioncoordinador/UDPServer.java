@@ -28,7 +28,7 @@ public class UDPServer extends Thread implements Serializable{
     }
     
     public void run(){
-        
+        Mensaje mensaje = new Mensaje();
         try{
             aSocket = new DatagramSocket( Integer.parseInt( port ) );
             System.out.println("Levantando servidor en " + ip + " " + " puerto " + port);
@@ -41,10 +41,8 @@ public class UDPServer extends Thread implements Serializable{
                 ByteArrayInputStream objIn = new ByteArrayInputStream( request.getData() );
                 ObjectInputStream ois = new ObjectInputStream( objIn );
                 try{
-                    Mensaje mensaje = (Mensaje) ois.readObject();
-                    for (ComunicadorListener cl : listeners) cl.receiveMessage( mensaje );
-                    System.out.print("Recibiendo mensaje con UDP: ");
-                    System.out.println( mensaje );
+                    mensaje = (Mensaje) ois.readObject();
+                    
                 }catch( Exception e){
                     e.printStackTrace();
                 }
@@ -54,6 +52,10 @@ public class UDPServer extends Thread implements Serializable{
                     request.getLength(), request.getAddress(), request.getPort());
                 aSocket.send(reply);
                 
+                
+                for (ComunicadorListener cl : listeners) cl.receiveMessage( mensaje );
+                System.out.print("Recibiendo mensaje con UDP: ");
+                System.out.println( mensaje );
                 //System.out.println( new String( request.getData(), "UTF-8" ).trim() );
             } 
         }catch (SocketException e){System.out.println("Socket: " + e.getMessage());
