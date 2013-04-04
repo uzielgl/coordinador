@@ -19,5 +19,6 @@ public class EleccionCoordinador {
         new FrameCoordinador().setVisible(true);
         new FrameCoordinador().setVisible(true);
         new FrameCoordinador().setVisible(true);
+        new FrameCoordinador().setVisible(true);
     }
 }
