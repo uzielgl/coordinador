@@ -98,6 +98,7 @@ class Proceso implements ComunicadorListener {
             window.lblCoordinador.setText( Integer.toString( m.from_id ) );
         }
         if( m.tipo == Mensaje.TIPO_ELECCION){
+            this.sleep(500);// Hay peticiones encoladas, y eso hace que supere el timeout
             seleccionarCoordinador();
         }
     }
