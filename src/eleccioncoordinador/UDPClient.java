@@ -17,10 +17,11 @@ import java.io.ByteArrayOutputStream;
  */
 public class UDPClient implements Serializable{
       
-    public void sendMessage(String ip, int port, Mensaje m){
+    public Mensaje sendMessage(String ip, int port, Mensaje m){
         //Lo convertimos a bytes
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream os;
+        Mensaje response_message = new Mensaje();
         try {
             os = new ObjectOutputStream(bytes);
             os.writeObject( m );  
@@ -43,6 +44,16 @@ public class UDPClient implements Serializable{
             byte[] buffer = new byte[1000];
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);	
             aSocket.receive(reply);
+            //La deserializamos
+            ByteArrayInputStream objIn = new ByteArrayInputStream( reply.getData() );
+            ObjectInputStream ois = new ObjectInputStream( objIn );
+            try{
+                Mensaje mensaje = (Mensaje) ois.readObject();
+                response_message = mensaje;
+            }catch( Exception e){
+                response_message.tipo = Mensaje.TIPO_SIN_RESPUESTA;
+            }
+            
             System.out.println("Reply: " + new String(reply.getData()));
             
             aSocket.close();
@@ -50,10 +61,13 @@ public class UDPClient implements Serializable{
             System.out.println( m );
         }catch (SocketException e){
             System.out.println("Socket: " + e.getMessage());
+            response_message.tipo = Mensaje.TIPO_SIN_RESPUESTA;
         }catch (IOException e){
             System.out.println( );
             System.out.println("IO: " + e.getMessage());
+            response_message.tipo = Mensaje.TIPO_SIN_RESPUESTA;
         }
+        return response_message;
     }
 
     

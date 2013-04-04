@@ -15,5 +15,9 @@ public class EleccionCoordinador {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        new FrameCoordinador().setVisible(true);
+        new FrameCoordinador().setVisible(true);
+        new FrameCoordinador().setVisible(true);
+        new FrameCoordinador().setVisible(true);
     }
 }

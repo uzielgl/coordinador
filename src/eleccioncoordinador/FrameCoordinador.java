@@ -74,6 +74,7 @@ public class FrameCoordinador extends javax.swing.JFrame {
         System.out.println(client.peers);
         
         client.start();
+        client.seleccionarCoordinador();
         btnStopStartProcess.setText( "Parar Proceso" );
     }
     
@@ -105,7 +106,7 @@ public class FrameCoordinador extends javax.swing.JFrame {
         lblCurrentProcess = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        lblStatusCoordinator = new javax.swing.JLabel();
+        lblCoordinador = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtHistory = new javax.swing.JTextArea();
@@ -148,9 +149,9 @@ public class FrameCoordinador extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("Soy coordinador:");
+        jLabel3.setText("Coordinador:");
 
-        lblStatusCoordinator.setFont(new java.awt.Font("Impact", 0, 14)); // NOI18N
+        lblCoordinador.setFont(new java.awt.Font("Impact", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -160,16 +161,15 @@ public class FrameCoordinador extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblStatusCoordinator, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblCoordinador, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(lblStatusCoordinator, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)))
+                .addComponent(jLabel3))
+            .addComponent(lblCoordinador, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Historial", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
@@ -305,9 +305,9 @@ public class FrameCoordinador extends javax.swing.JFrame {
             .addGap(0, 384, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap(15, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addContainerGap(15, Short.MAX_VALUE)))
         );
 
         pack();
@@ -319,9 +319,12 @@ public class FrameCoordinador extends javax.swing.JFrame {
         if( this.btnStopStartProcess.getText().equals( "Iniciar Proceso" ) ){
             client.start();
             btnStopStartProcess.setText( "Parar Proceso" );
+            client.seleccionarCoordinador();
+            btnSelectCoordinator.setEnabled(true);
         }else{
             client.stop();
             btnStopStartProcess.setText( "Iniciar Proceso" );
+            btnSelectCoordinator.setEnabled(false);
         }
     }//GEN-LAST:event_btnStopStartProcessActionPerformed
 
@@ -330,6 +333,9 @@ public class FrameCoordinador extends javax.swing.JFrame {
         client.seleccionarCoordinador();
     }//GEN-LAST:event_btnSelectCoordinatorActionPerformed
 
+    public void addHistory(String s){
+        txtHistory.append("-------------------------\n" + s + "\n");
+    }
     /**
      * @param args the command line arguments
      */
@@ -377,8 +383,8 @@ public class FrameCoordinador extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JLabel lblCoordinador;
     private javax.swing.JLabel lblCurrentProcess;
-    private javax.swing.JLabel lblStatusCoordinator;
     private javax.swing.JPanel pnlButtons;
     private javax.swing.JTextArea txtHistory;
     // End of variables declaration//GEN-END:variables
