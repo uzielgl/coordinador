@@ -42,16 +42,13 @@ public class UDPServer extends Thread implements Serializable{
                 ObjectInputStream ois = new ObjectInputStream( objIn );
                 try{
                     mensaje = (Mensaje) ois.readObject();
-                    
                 }catch( Exception e){
                     e.printStackTrace();
                 }
-                
                 //Hacemos la replica
                 DatagramPacket reply = new DatagramPacket(request.getData(), 
                     request.getLength(), request.getAddress(), request.getPort());
                 aSocket.send(reply);
-                
                 
                 for (ComunicadorListener cl : listeners) cl.receiveMessage( mensaje );
                 System.out.print("Recibiendo mensaje con UDP: ");
