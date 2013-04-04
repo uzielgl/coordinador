@@ -94,6 +94,7 @@ class Proceso implements ComunicadorListener {
     /** Este es del listener*/
     public void receiveMessage(Mensaje m){
         if( m.tipo == Mensaje.TIPO_COORDINADOR){
+            window.addHistory("Se ha recibido mensaje de coordinador del proceso " + m.from_id);
             window.lblCoordinador.setText( Integer.toString( m.from_id ) );
         }
         if( m.tipo == Mensaje.TIPO_ELECCION){
